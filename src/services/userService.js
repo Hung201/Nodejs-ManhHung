@@ -123,8 +123,9 @@ let createNewUser = (data) => {
                     lastName: data.lastName,
                     address: data.address,
                     phonenumber: data.phonenumber,
-                    gender: data.gender === '1' ? true : false,
+                    gender: data.gender,
                     roleId: data.roleId,
+                    positionId: data.positionId
                 })
 
                 resolve({
@@ -168,7 +169,7 @@ let deleteUser = (userId) => {
 let editUser = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!data.id) {
+            if (!data.id || !data.roleId || !data.positionId || !data.gender) {
                 resolve({
                     errCode: 2,
                     errMessage: 'Missing required parameters'
@@ -184,6 +185,10 @@ let editUser = (data) => {
                 user.firstName = data.firstName;
                 user.lastName = data.lastName;
                 user.address = data.address;
+                user.phonenumber = data.phonenumber;
+                user.gender = data.gender;
+                user.roleId = data.roleId;
+                user.positionId = data.positionId;
                 await user.save()
                 resolve({
                     errCode: 0,
@@ -200,10 +205,34 @@ let editUser = (data) => {
         }
     })
 }
+
+let getAllcodesService = (type) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!type) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!'
+                })
+            } else {
+                let res = {}
+                let allcodes = await db.Allcode.findAll({
+                    where: { type: type }
+                })
+                res.errCode = 0
+                res.data = allcodes
+                resolve(res)
+            }
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 module.exports = {
     handleUserLogin: handleUserLogin,
     getAllUsers: getAllUsers,
     deleteUser: deleteUser,
     editUser: editUser,
-    createNewUser: createNewUser
+    createNewUser: createNewUser,
+    getAllcodesService: getAllcodesService
 }
