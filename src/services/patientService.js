@@ -18,7 +18,6 @@ let postBookAppointment = (data) => {
                     errMessage: 'Missing parameter'
                 })
             } else {
-                let res = {};
 
                 //update patient
                 let user = await db.User.findOne({
@@ -34,7 +33,6 @@ let postBookAppointment = (data) => {
                         order: [['createdAt', 'DESC']],
                     });
                     let token = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
-
                     if (!eleLatest) {
                         await db.Booking.findOrCreate({
                             where: { patientId: user.id },
@@ -48,8 +46,11 @@ let postBookAppointment = (data) => {
                             }
                         })
 
-                        res.errCode = 0;
-                        res.errMessage = 'Save infor patient success!'
+                        resolve({
+                            errCode: 0,
+                            errMessage: 'Save infor patient success!'
+                        })
+
                         // send email
                         await emailService.sendSimpleEmail({
                             reciverEmail: data.email,
@@ -69,9 +70,11 @@ let postBookAppointment = (data) => {
                             timeType: data.timeType,
                             token: token
                         });
+                        resolve({
+                            errCode: 0,
+                            errMessage: 'Save infor patient success!'
+                        })
 
-                        res.errCode = 0;
-                        res.errMessage = 'Save infor patient success!'
                         // send email
 
                         await emailService.sendSimpleEmail({
@@ -84,12 +87,16 @@ let postBookAppointment = (data) => {
                         })
                     }
                     else if (eleLatest && eleLatest.statusId === 'S1' || eleLatest.statusId === 'S2') {
-                        res.errCode = 2;
-                        res.errMessage = 'Save infor patient failed!'
+                        resolve({
+                            errCode: 2,
+                            errMessage: 'Save infor patient failed!'
+                        })
                     }
                 } else {
-                    res.errCode = 3;
-                    res.errMessage = `Your email doesn't exist!`
+                    resolve({
+                        errCode: 3,
+                        errMessage: `Your email doesn't exist!`
+                    })
                 }
                 resolve({ res })
             }
@@ -117,7 +124,6 @@ let postVerifyBookAppointment = (data) => {
                     },
                     raw: false
                 })
-                console.log(appointment)
 
                 if (appointment) {
                     appointment.statusId = 'S2'
