@@ -22,16 +22,23 @@ let postBookAppointment = (data) => {
                 //update patient
                 let user = await db.User.findOne({
                     where: { email: data.email },
+                    raw: false
                 });
 
                 // find latest entry
                 if (user && user.email) {
+                    user.address = data.address;
+                    user.gender = data.selectedGender;
+                    user.phonenumber = data.phoneNumber;
+                    user.firstName = data.fullName;
+                    await user.save();
                     let eleLatest = await db.Booking.findOne({
                         where: {
                             patientId: user.id
                         },
                         order: [['createdAt', 'DESC']],
                     });
+
                     let token = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
                     if (!eleLatest) {
                         await db.Booking.findOrCreate({
