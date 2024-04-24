@@ -20,33 +20,37 @@ let postBookAppointment = (data) => {
             } else {
 
                 //update patient
-                let user = await db.User.findOne({
+                let user = await db.User.findOrCreate({
                     where: { email: data.email },
-                    raw: false
+                    defaults: {
+                        email: data.email,
+                        address: data.address,
+                        gender: data.selectedGender,
+                        phonenumber: data.phoneNumber,
+                        firstName: data.fullName,
+                        roleId: 'R3'
+                    },
+                    // raw: true
                 });
-
                 // find latest entry
-                if (user && user.email) {
-                    user.address = data.address;
-                    user.gender = data.selectedGender;
-                    user.phonenumber = data.phoneNumber;
-                    user.firstName = data.fullName;
-                    await user.save();
+                if (user[0] && user[0].email) {
                     let eleLatest = await db.Booking.findOne({
                         where: {
-                            patientId: user.id
+                            patientId: user[0].id
                         },
                         order: [['createdAt', 'DESC']],
                     });
+                    console.log('check user: ', eleLatest)
+
 
                     let token = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
                     if (!eleLatest) {
                         await db.Booking.findOrCreate({
-                            where: { patientId: user.id },
+                            where: { patientId: user[0].id },
                             defaults: {
                                 statusId: 'S1',
                                 doctorId: data.doctorId,
-                                patientId: user.id,
+                                patientId: user[0].id,
                                 date: data.date,
                                 timeType: data.timeType,
                                 token: token
@@ -72,7 +76,7 @@ let postBookAppointment = (data) => {
                         await db.Booking.create({
                             statusId: 'S1',
                             doctorId: data.doctorId,
-                            patientId: user.id,
+                            patientId: user[0].id,
                             date: data.date,
                             timeType: data.timeType,
                             token: token
