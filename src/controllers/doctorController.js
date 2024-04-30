@@ -68,7 +68,7 @@ let bulkCreateSchedule = async (req, res) => {
         console.log(e)
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from the severhh'
+            errMessage: 'Error from the sever!'
         })
     }
 }
@@ -113,7 +113,7 @@ let getProfifeDoctorById = async (req, res) => {
         console.log(e)
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from the severhh'
+            errMessage: 'Error from the sever!'
         })
     }
 }
@@ -128,11 +128,25 @@ let getListPatientForDoctor = async (req, res) => {
         console.log(e)
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from the severhh'
+            errMessage: 'Error from the sever!'
         })
     }
 }
 
+let sendRemedy = async (req, res) => {
+    try {
+        let infor = await doctorService.sendRemedy(req.body);
+        return res.status(200).json(
+            infor
+        )
+    } catch (e) {
+        console.log(e)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the sever!'
+        })
+    }
+}
 module.exports = {
     getTopDoctorHome,
     getAllDoctor,
@@ -142,5 +156,6 @@ module.exports = {
     getScheduleByDate,
     getExtraInforDoctorById,
     getProfifeDoctorById,
-    getListPatientForDoctor
+    getListPatientForDoctor,
+    sendRemedy
 }
