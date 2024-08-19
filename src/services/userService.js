@@ -231,11 +231,40 @@ let getAllcodesService = (type) => {
         }
     })
 }
+let handleSignUp = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            //check email is exist ???
+            let check = await checkUserEmail(data.email);
+            if (check === true) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Your email is already in used, please try an another email!'
+                })
+
+            } else {
+                let hashPasswordFromBcrypt = await hashUserPassword(data.password);
+                await db.User.create({
+                    email: data.email,
+                    password: hashPasswordFromBcrypt,
+                    roleId: 'R2'
+                })
+                resolve({
+                    errCode: 0,
+                    errMessage: 'true'
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 module.exports = {
-    handleUserLogin: handleUserLogin,
-    getAllUsers: getAllUsers,
-    deleteUser: deleteUser,
-    editUser: editUser,
-    createNewUser: createNewUser,
-    getAllcodesService: getAllcodesService
+    handleUserLogin,
+    getAllUsers,
+    deleteUser,
+    editUser,
+    createNewUser,
+    getAllcodesService,
+    handleSignUp
 }

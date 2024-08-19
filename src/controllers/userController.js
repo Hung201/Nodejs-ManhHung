@@ -75,11 +75,20 @@ let handleGetAllcodes = async (req, res) => {
         })
     }
 }
+let handleSignUp = async (req, res) => {
+    try {
+        let errMessage = await userService.handleSignUp(req.body);
+        return res.status(200).json(errMessage)
+    } catch (e) {
+        console.log(e)
+    }
+}
 module.exports = {
-    handleLogin: handleLogin,
-    handleGetAllUsers: handleGetAllUsers,
-    handleDeleteUser: handleDeleteUser,
-    handleEditUser: handleEditUser,
-    handleCreateNewUser: handleCreateNewUser,
-    handleGetAllcodes: handleGetAllcodes
+    handleLogin,
+    handleGetAllUsers,
+    handleDeleteUser,
+    handleEditUser,
+    handleCreateNewUser,
+    handleGetAllcodes,
+    handleSignUp
 }
