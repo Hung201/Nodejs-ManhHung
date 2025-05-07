@@ -22,7 +22,6 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 viewEngine(app);
 initWebRoutes(app);
 
-
 connectDB();
 
 let port = process.env.PORT || 6969;

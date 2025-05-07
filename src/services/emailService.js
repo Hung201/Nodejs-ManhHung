@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer'
 "use strict";
 let sendSimpleEmail = async (dataSend) => {
     let transporter = nodemailer.createTransport({
+        service: 'Gmail',
         host: "smtp.gmail.com",
         port: 465,
         secure: true,
@@ -16,7 +17,7 @@ let sendSimpleEmail = async (dataSend) => {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: '"Phạm Mạnh Hùng 👻" <hungphammanh777@gmail.com>', // sender address
+        from: '"BookingCare" <hungphammanh777@gmail.com>', // sender address
         to: dataSend.reciverEmail, // list of receivers
         subject: "Thông tin đặt lịch khám bệnh", // Subject line
         html: getBodyHTMLEmail(dataSend)

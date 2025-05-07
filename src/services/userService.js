@@ -247,6 +247,11 @@ let handleSignUp = (data) => {
                 await db.User.create({
                     email: data.email,
                     password: hashPasswordFromBcrypt,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    address: data.address,
+                    phonenumber: data.phonenumber,
+                    gender: data.gender,
                     roleId: 'R2'
                 })
                 resolve({
